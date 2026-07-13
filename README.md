@@ -1,38 +1,55 @@
 # Threat Intelligence Triage Automation Tool
 
-## 📌 Executive Summary
-Manual triage of Security Operations Center (SOC) alerts significantly impacts incident response lifecycle metrics. Tier 1 analysts frequently waste valuable operational cycles copy-pasting Indicators of Compromise (IoCs) across disjointed threat intelligence web consoles. 
-
-This project solves that operational bottleneck. It is a production-ready **Python-driven Threat Intelligence Automation Script** that communicates securely via API with the **VirusTotal v3 engine**. It programmatically ingests external IP addresses, aggregates multi-vendor security telemetry, evaluates malicious thresholds, and automatically outputs actionable perimeter defensive instructions to accelerate incident triage.
+## 📌 Project Overview
+This project demonstrates the development, implementation, and deployment of a programmatic security orchestration layer designed to accelerate incident response lifecycles. Built entirely in Python, the tool interfaces directly with the enterprise-grade VirusTotal v3 Core API to ingest external IP addresses, parse complex multi-vendor JSON telemetry data, evaluate risk thresholds, and automatically output actionable perimeter defensive playbook instructions. This removes manual analysis bottlenecks and directly optimizes the Mean Time to Detect (MTTD) inside a modern Security Operations Center (SOC).
 
 ---
 
 ## 🏗️ Technical Architecture & Core Tools
-* **Language:** Python 3.x
-* **Libraries:** `requests` (API integration), `python-dotenv` (Secure environment variables management)
-* **Threat Intelligence Provider:** VirusTotal v3 Core API Engine
-* **Target Scope:** External IPv4 Threat Analysis, Vendor Telemetry Parsing
 
----
+* **Core Runtime:** Python 3.x Engine.
+* **API Integration Layer:** Python `requests` library (handling structured RESTful HTTP GET requests).
+* **Configuration Security:** `python-dotenv` framework (for localized cryptographic environment variables separation).
+* **Threat Intelligence Infrastructure:** VirusTotal v3 REST API Endpoint Engine.
 
-## 🖥️ Development Workspace & Environment Setup
-To ensure proper structural configuration, the local environment isolates administrative variables from the raw source code. 
-
-### Local Repository Architecture:
-Below is the verified production workspace configuration inside Visual Studio Code, displaying the isolated `.env` file and programmatic script placement:
-
+### Local Development Workspace Configuration
 ![VS Code Environment Setup](vscode_workspace.png)
 
 ---
 
-## 🔒 Security Architecture (Zero-Leak Policy)
-To adhere to enterprise-grade DevSecOps standards, this repository implements a strict **Zero-Leak API Key Policy**. The core application isolates private infrastructure keys within a localized `.env` file. A programmatic `.gitignore` layer ensures sensitive access credentials are never synchronized or leaked to public source control.
+## 🛠️ Technical Implementation & Milestones
+
+### Phase 1: DevSecOps Environment Hardening & Architecture
+* Architected a strict **Zero-Leak API Key Policy** to prevent unauthorized exposure of private infrastructure access tokens.
+* Isolated operational variables inside a localized, hidden configuration layer (`.env`).
+* Programmed a repository-level `.gitignore` exclusion array to intercept administrative credentials and completely block them from being synchronized to public version control pipelines.
+
+### Phase 2: Programmatic Ingestion & Error Handling
+* Developed a resilient network interaction model capable of parsing live internet-facing API queries.
+* Built programmatic validation blocks to handle dynamic HTTP status codes, ensuring smooth operational fault tolerance if unauthorized access (`HTTP 401`) or invalid address strings (`HTTP 404`) occur.
+* Formatted the application flow to handle data streams efficiently, keeping memory requirements low during live analyst runtime loops.
 
 ---
 
-## ⚙️ Installation & Deployment
+## 🚨 Threat Analysis Triage & Automation Validation
 
-1. **Clone the Repository:**
-   ```bash
-   git clone [https://github.com/TheCptNubs30/threat-intel-automation.git](https://github.com/TheCptNubs30/threat-intel-automation.git)
-   cd threat-intel-automation
+To evaluate the programmatic efficiency of the tool's classification engine, the script was put through controlled validation scenarios mimicking standard SOC queue tickets:
+
+### Scenario A: Benign Asset Verification (Target: 8.8.8.8)
+* **Action:** Programmatically queried a known trusted public resolver signature.
+* **Automation Response:** The script accurately extracted the JSON multi-vendor telemetry payload, verified zero malicious flags, and suppressed alert fatigue by confirming a clean network status.
+
+#### Runtime Console Execution (Clean Run):
+![Command Prompt Clean Run Output](terminal_clean_run.png)
+
+```text
+[+] Querying VirusTotal for telemetry on: 8.8.8.8...
+=========================================
+📊 REPORT FOR IP: 8.8.8.8
+=========================================
+🔴 Malicious Flags: 0
+🟡 Suspicious Flags: 0
+🟢 Clean/Harmless Flags: 74
+-----------------------------------------
+✅ STATUS: 8.8.8.8 appears clean. No malicious signatures detected.
+=========================================
