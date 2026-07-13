@@ -53,3 +53,23 @@ To evaluate the programmatic efficiency of the tool's classification engine, the
 -----------------------------------------
 ✅ STATUS: 8.8.8.8 appears clean. No malicious signatures detected.
 =========================================
+```
+### Scenerio A: High-Risk Incident Escalation (Target: 1.117.214.34)
+* **Action:** Ingested a live external IPv4 address historically associated with automated adversarial network mapping.
+* **Automation Response:** The script parsed 14 explicit malicious security vendor signatures, immediately bypassed safety limits, triggered a critical security alert flag, and instantly output automated remediation guidance for defensive staff.
+
+#### Runtime Console Execution (Malicious Run):
+![Command Prompt Malicious Run Output](terminal malicious alert.png)
+
+```text
+[+] Querying VirusTotal for telemetry on: 1.117.214.34...
+=========================================
+📊 REPORT FOR IP: 1.117.214.34
+=========================================
+🔴 Malicious Flags: 14
+🟡 Suspicious Flags: 0
+🟢 Clean/Harmless Flags: 60
+-----------------------------------------
+🚨 ALERT: 1.117.214.34 has been flagged as MALICIOUS by 14 security vendors!
+[ACTION REQUIRED] Isolate endpoint and block this IP on the perimeter firewall.
+=========================================
