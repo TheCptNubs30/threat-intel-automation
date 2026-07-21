@@ -1,48 +1,44 @@
-# Threat Intelligence Triage Automation Tool
+# Threat Intel Triage Tool
 
-## 📌 Project Overview
-This project demonstrates the development, implementation, and deployment of a programmatic security orchestration layer designed to accelerate incident response lifecycles. Built entirely in Python, the tool interfaces directly with the enterprise-grade VirusTotal v3 Core API to ingest external IP addresses, parse complex multi-vendor JSON telemetry data, evaluate risk thresholds, and automatically output actionable perimeter defensive playbook instructions. This removes manual analysis bottlenecks and directly optimizes the Mean Time to Detect (MTTD) inside a modern Security Operations Center (SOC).
+## Overview
 
----
-
-## 🏗️ Technical Architecture & Core Tools
-
-* **Core Runtime:** Python 3.x Engine.
-* **API Integration Layer:** Python `requests` library (handling structured RESTful HTTP GET requests).
-* **Configuration Security:** `python-dotenv` framework (for localized cryptographic environment variables separation).
-* **Threat Intelligence Infrastructure:** VirusTotal v3 REST API Endpoint Engine.
-
-### Local Development Workspace Configuration
-![VS Code Environment Setup](vscode_workspace.png)
+A Python command-line tool that checks an IP address against the VirusTotal v3 API and returns a clear clean/malicious verdict, pulling from VirusTotal's aggregated multi-vendor threat data. Built to save a SOC analyst the manual step of looking up an indicator by hand during alert triage — feed it an IP, get a readable report back.
 
 ---
 
-## 🛠️ Technical Implementation & Milestones
+## Tech Stack
 
-### Phase 1: DevSecOps Environment Hardening & Architecture
-* Architected a strict **Zero-Leak API Key Policy** to prevent unauthorized exposure of private infrastructure access tokens.
-* Isolated operational variables inside a localized, hidden configuration layer (`.env`).
-* Programmed a repository-level `.gitignore` exclusion array to intercept administrative credentials and completely block them from being synchronized to public version control pipelines.
+- **Language:** Python 3
+- **HTTP requests:** `requests` library, calling the VirusTotal v3 REST API
+- **Secrets handling:** `python-dotenv` to keep the API key out of the codebase, with `.gitignore` excluding `.env` from version control
 
-### Phase 2: Programmatic Ingestion & Error Handling
-* Developed a resilient network interaction model capable of parsing live internet-facing API queries.
-* Built programmatic validation blocks to handle dynamic HTTP status codes, ensuring smooth operational fault tolerance if unauthorized access (`HTTP 401`) or invalid address strings (`HTTP 404`) occur.
-* Formatted the application flow to handle data streams efficiently, keeping memory requirements low during live analyst runtime loops.
+### Local Development Setup
+
+[![VS Code Environment Setup](https://github.com/TheCptNubs30/threat-intel-automation/raw/main/vscode_workspace.png)](/TheCptNubs30/threat-intel-automation/blob/main/vscode_workspace.png)
 
 ---
 
-## 🚨 Threat Analysis Triage & Automation Validation
+## How It Works
 
-To evaluate the programmatic efficiency of the tool's classification engine, the script was put through controlled validation scenarios mimicking standard SOC queue tickets:
+1. Takes an IP address as input
+2. Queries the VirusTotal API for that IP's reputation data
+3. Parses the JSON response and counts malicious/suspicious/clean flags across vendors
+4. Handles common failure cases cleanly — invalid API key (`401`), IP not found (`404`) — instead of crashing
+5. Prints a formatted report with a clear verdict and, if malicious, a suggested next action
 
-### Scenario A: Benign Asset Verification (Target: 8.8.8.8)
-* **Action:** Programmatically queried a known trusted public resolver signature.
-* **Automation Response:** The script accurately extracted the JSON multi-vendor telemetry payload, verified zero malicious flags, and suppressed alert fatigue by confirming a clean network status.
+---
 
-#### Runtime Console Execution (Clean Run):
-![Command Prompt Clean Run Output](terminal_clean_run.png)
+## Validation
 
-```text
+I tested the tool against two scenarios to confirm the classification logic works correctly on both ends:
+
+### Scenario A: Clean IP (8.8.8.8)
+
+Queried a known trusted public DNS resolver to confirm the tool correctly identifies clean addresses without raising false alarms.
+
+[![Command Prompt Clean Run Output](https://github.com/TheCptNubs30/threat-intel-automation/raw/main/terminal_clean_run.png)](/TheCptNubs30/threat-intel-automation/blob/main/terminal_clean_run.png)
+
+```
 [+] Querying VirusTotal for telemetry on: 8.8.8.8...
 =========================================
 📊 REPORT FOR IP: 8.8.8.8
@@ -54,14 +50,14 @@ To evaluate the programmatic efficiency of the tool's classification engine, the
 ✅ STATUS: 8.8.8.8 appears clean. No malicious signatures detected.
 =========================================
 ```
-### Scenerio B: High-Risk Incident Escalation (Target: 1.117.214.34)
-* **Action:** Ingested a live external IPv4 address historically associated with automated adversarial network mapping.
-* **Automation Response:** The script parsed 14 explicit malicious security vendor signatures, immediately bypassed safety limits, triggered a critical security alert flag, and instantly output automated remediation guidance for defensive staff.
 
-#### Runtime Console Execution (Malicious Run):
-![Command Prompt Malicious Run Output](terminal_malicious_alert.png)
+### Scenario B: Malicious IP (1.117.214.34)
 
-```text
+Queried a known-bad IP to confirm the tool correctly flags a threat and surfaces actionable guidance.
+
+[![Command Prompt Malicious Run Output](https://github.com/TheCptNubs30/threat-intel-automation/raw/main/terminal_malicious_alert.png)](/TheCptNubs30/threat-intel-automation/blob/main/terminal_malicious_alert.png)
+
+```
 [+] Querying VirusTotal for telemetry on: 1.117.214.34...
 =========================================
 📊 REPORT FOR IP: 1.117.214.34
@@ -73,3 +69,18 @@ To evaluate the programmatic efficiency of the tool's classification engine, the
 🚨 ALERT: 1.117.214.34 has been flagged as MALICIOUS by 14 security vendors!
 [ACTION REQUIRED] Isolate endpoint and block this IP on the perimeter firewall.
 =========================================
+```
+
+---
+
+## What I'd Add Next
+
+- Batch lookup support (list of IPs from a CSV instead of one at a time)
+- Support for hash and domain lookups, not just IPs
+- Export results to CSV/JSON for use in a ticketing system
+
+---
+
+## About
+
+Built as a hands-on project to practice API integration, error handling, and threat intelligence enrichment — the kind of lookup step a Tier 1 SOC analyst does dozens of times a shift, automated.
